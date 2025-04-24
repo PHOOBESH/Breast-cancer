@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
     inputs:
       environment:
@@ -34,14 +34,14 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd Breast-Cancer-Detection-Application-main/BACKEND
+          pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-flask
 
       - name: Run backend tests
         run: |
           cd Breast-Cancer-Detection-Application-main/BACKEND
-          pytest -v
-
+          pytest -vv --disable-warnings
       # Frontend Tests
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -56,8 +56,7 @@ jobs:
       - name: Run frontend tests
         run: |
           cd Breast-Cancer-Detection-Application-main/my-app
-          npm test -- --watchAll=false
-
+          npm test -- --watchAll=false --verbose
   build:
     name: Build Docker Images
     needs: test
