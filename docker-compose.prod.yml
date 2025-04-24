@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  backend:
+    image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_USERNAME:-user}/breast-cancer-backend:${TAG:-latest}
+    container_name: breast-cancer-backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT:-5002}:5000"
+    environment:
+      - MODEL_PATH=/app/my_model3.h5
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_USERNAME:-user}/breast-cancer-frontend:${TAG:-latest}
+    container_name: breast-cancer-frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  default:
+    name: breast-cancer-network

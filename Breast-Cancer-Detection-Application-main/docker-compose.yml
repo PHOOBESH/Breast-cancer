@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  backend:
+    build: ./BACKEND
+    container_name: breast-cancer-backend
+    restart: always
+    ports:
+      - "5002:5000"
+    environment:
+      - MODEL_PATH=/app/my_model3.h5
+
+  frontend:
+    build: ./my-app
+    container_name: breast-cancer-frontend
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
