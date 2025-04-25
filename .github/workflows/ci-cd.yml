@@ -34,22 +34,20 @@ jobs:
       - name: Install backend dependencies
         run: |
           cd BACKEND
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-flask
 
       - name: Create basic test file
         run: |
           mkdir -p BACKEND/tests
-          echo '
-def test_simple():
-    assert True
-' > BACKEND/tests/test_simple.py
+          echo "def test_simple():\n    assert True" > BACKEND/tests/test_simple.py
 
       - name: Run backend tests
         run: |
           cd BACKEND
           python -m pytest tests/ -vv --disable-warnings
+
       # Frontend Tests
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -64,16 +62,13 @@ def test_simple():
       - name: Create basic React test
         run: |
           mkdir -p my-app/src/__tests__
-          echo '
-test("Basic test", () => {
-  expect(true).toBe(true);
-});
-' > my-app/src/__tests__/basic.test.js
+          echo "test('Basic test', () => { expect(true).toBe(true); });" > my-app/src/__tests__/basic.test.js
 
       - name: Run frontend tests
         run: |
           cd my-app
           CI=true npm test
+
   build:
     name: Build Docker Images
     needs: test
